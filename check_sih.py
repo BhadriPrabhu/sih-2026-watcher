@@ -30,7 +30,7 @@ def check_sih():
             f.write(page_hash)
         
         msg = f"SIH 2026 site updated! Keywords matched: {found}\nCheck: {URL}"
-        requests.post(WEBHOOK_URL, json={"content": msg})
+        requests.post(WEBHOOK_URL, data=msg.encode("utf-8"))
 
 if __name__ == "__main__":
     check_sih()
