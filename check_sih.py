@@ -1,21 +1,16 @@
 import hashlib
 import os
 import requests
+from curl_cffi import requests as curl_requests
 from bs4 import BeautifulSoup
 
 URL = "https://www.sih.gov.in/"
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 KEYWORDS = ["shortlisted", "result", "grand finale 2026", "results out"]
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-}
-
 def check_sih():
-    print("1. Fetching SIH website...", flush=True)
-    res = requests.get(URL, headers=HEADERS, timeout=(10, 15))
+    print("1. Fetching SIH website with Chrome TLS fingerprint...", flush=True)
+    res = curl_requests.get(URL, impersonate="chrome", timeout=20)
     print(f"2. Got status code: {res.status_code}", flush=True)
     res.raise_for_status()
 
