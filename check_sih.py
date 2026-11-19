@@ -3,13 +3,14 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
-URL = "https://r.jina.ai/https://www.sih.gov.in/"
+PROXY_URL = "https://sih-2026-watcher.vercel.app/api/sih"
+SIH_URL = "https://www.sih.gov.in/"
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 KEYWORDS = ["shortlisted", "result", "grand finale 2026", "results out"]
 
 def check_sih():
-    print("1. Fetching SIH website with Chrome TLS fingerprint...", flush=True)
-    res = requests.get(URL, timeout=20)
+    print("1. Fetching SIH via Mumbai Vercel Proxy...", flush=True)
+    res = requests.get(PROXY_URL, timeout=25)
     print(f"2. Got status code: {res.status_code}", flush=True)
     res.raise_for_status()
 
@@ -29,7 +30,7 @@ def check_sih():
         with open("last_hash.txt", "w") as f:
             f.write(page_hash)
 
-        msg = f"SIH 2026 site updated! Keywords matched: {found}\nCheck: {URL}"
+        msg = f"SIH 2026 site updated! Keywords matched: {found}\nCheck: {SIH_URL}"
         r = requests.post(
             WEBHOOK_URL,
             data=msg.encode("utf-8"),
