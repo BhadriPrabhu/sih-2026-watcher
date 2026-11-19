@@ -4,7 +4,7 @@ import requests
 from curl_cffi import requests as curl_requests
 from bs4 import BeautifulSoup
 
-URL = "https://www.sih.gov.in/"
+URL = "https://r.jina.ai/https://www.sih.gov.in/"
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 KEYWORDS = ["shortlisted", "result", "grand finale 2026", "results out"]
 
