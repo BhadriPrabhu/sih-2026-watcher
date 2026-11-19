@@ -11,15 +11,26 @@ A lightweight, serverless Python bot running on **GitHub Actions** that monitors
 ## Architecture
 
 ```mermaid
-flowchart TD
-    A[GitHub Actions Cron<br/>Runs every 30 mins] --> B[Run check_sih.py]
-    B --> C[Fetch sih.gov.in<br/>& Extract Visible Text]
-    C --> D[Generate SHA-256 Hash<br/>& Scan Keywords]
-    D --> E{Matches<br/>last_hash.txt?}
-    E -- Yes --> F[No Changes<br/>Exit Silently]
-    E -- No --> G[Update last_hash.txt<br/>& Commit to Repo]
-    G --> H[HTTP POST to ntfy.sh<br/>via GitHub Secret]
-    H --> I[Instant Push Alert<br/>on Phone]
+graph TD
+    Cron["GitHub Actions Scheduler (Cron every 30 mins)"]
+    Runner["GitHub Actions Runner (Ubuntu + Python 3.11)"]
+    Secrets[("GitHub Secrets (WEBHOOK_URL)")]
+    Repo[("GitHub Repository (last_hash.txt)")]
+    Script["SIH Watcher Script (check_sih.py + BeautifulSoup)"]
+    SIH["SIH 2026 Portal (sih.gov.in over HTTPS)"]
+    Ntfy["ntfy.sh Server (HTTP Push API)"]
+    Phone["User Phone (ntfy Mobile App)"]
+
+    Cron -->|Triggers scheduled workflow run| Runner
+    Runner -->|Checks out files and executes| Script
+    Secrets -->|Injects WEBHOOK_URL environment variable into| Script
+    Script -->|Sends HTTP GET request to| SIH
+    SIH -->|Returns HTML page content to| Script
+    Script -->|Reads previous SHA-256 hash from| Repo
+    Script -->|Writes new hash on content change to| Repo
+    Runner -->|Commits and pushes updated last_hash.txt to| Repo
+    Script -->|Sends HTTP POST alert with matched keywords to| Ntfy
+    Ntfy -->|Delivers instant push notification to| Phone
 ```
 
 ---
