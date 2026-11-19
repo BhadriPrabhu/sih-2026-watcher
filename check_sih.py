@@ -1,7 +1,6 @@
 import hashlib
 import os
 import requests
-from curl_cffi import requests as curl_requests
 from bs4 import BeautifulSoup
 
 URL = "https://r.jina.ai/https://www.sih.gov.in/"
@@ -10,7 +9,7 @@ KEYWORDS = ["shortlisted", "result", "grand finale 2026", "results out"]
 
 def check_sih():
     print("1. Fetching SIH website with Chrome TLS fingerprint...", flush=True)
-    res = curl_requests.get(URL, impersonate="chrome", timeout=20)
+    res = requests.get(URL, timeout=20)
     print(f"2. Got status code: {res.status_code}", flush=True)
     res.raise_for_status()
 
